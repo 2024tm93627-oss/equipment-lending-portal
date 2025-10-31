@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6
+    container_name: elp_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: elp_backend
+    depends_on:
+      - mongo
+    environment:
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/equipment_db
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
